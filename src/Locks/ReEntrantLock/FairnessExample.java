@@ -2,7 +2,13 @@ package Locks.ReEntrantLock;
 
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
-
+/*
+Fairness of Locks
+Fairness in the context of locks refers to the order in which threads acquire a lock. A fair lock ensures that threads acquire the lock in the order they requested it,
+ preventing thread starvation. With a fair lock, if multiple threads are waiting, the longest-waiting thread is granted the lock next. However, fairness can lead to
+ lower throughput due to the overhead of maintaining the order. Non-fair locks, in contrast, allow threads to “cut in line,” potentially offering better performance
+ but at the risk of some threads waiting indefinitely if others frequently acquire the lock.
+ */
 public class FairnessExample {
 
         // true → enables fairness (threads served in FIFO order)
