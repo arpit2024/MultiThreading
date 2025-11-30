@@ -1,0 +1,132 @@
+===========================
+REENTRANT LOCK
+
+A Reentrant Lock in Java is a type of lock that allows a thread to acquire the same lock multiple times without getting blocked.
+If a thread already holds the lock, it can re-enter and lock again without causing a deadlock.
+This is useful when a thread needs to call nested synchronized methods that require the same lock.
+
+ReentrantLock is available in:
+java.util.concurrent.locks.ReentrantLock
+
+It provides more flexibility and control than the 'synchronized' keyword.
+
+Advantages Over 'synchronized'
+
+• tryLock() – non-blocking lock acquisition
+• Timed lock support (tryLock with timeout)
+• Lock can be acquired interruptibly
+• Fairness policy to avoid starvation
+• Supports multiple Condition objects
+• Offers detailed control for high-concurrency systems
+
+How Reentrancy Works
+
+• The same thread is allowed to call lock() repeatedly.
+• The lock maintains an internal hold count.
+• lock() increases the hold count.
+• unlock() decreases the hold count.
+• The lock is fully released only when the hold count becomes zero.
+
+This prevents self-deadlock when a locked method calls another locked method.
+
+===========================
+METHODS OF REENTRANTLOCK
+
+lock()
+• Blocks the thread until the lock becomes available.
+• The thread may wait indefinitely.
+
+tryLock()
+• Attempts to acquire the lock immediately.
+• Does not wait.
+• Returns true if lock is acquired, false otherwise.
+
+tryLock(long timeout, TimeUnit unit)
+• Attempts to acquire the lock but waits only for the given time.
+• Prevents waiting forever and helps avoid deadlock.
+• Returns true if lock is acquired within timeout, false otherwise.
+
+unlock()
+• Releases the lock held by the current thread.
+• Must always be called inside a finally block to avoid deadlock.
+
+lockInterruptibly()
+• Acquires the lock unless the current thread is interrupted.
+• Allows interruption while waiting for the lock (unlike lock()).
+
+Important Points / Best Practices
+
+• Always pair lock() with unlock() in a finally block.
+• If unlock() is missed, the system will deadlock.
+• Use tryLock() when threads should not wait forever.
+• Use fairness lock when starvation is a concern:
+new ReentrantLock(true) // fairness mode
+• Multiple Condition objects allow powerful wait/notify control.
+
+===========================
+WHEN TO USE WHAT
+
+Use 'synchronized' when:
+• Simpler locking requirement
+• Blocking behavior is acceptable
+• Code readability is more important than flexibility
+
+Use ReentrantLock when:
+• You need tryLock(), timed lock, or interruptible locking
+• You need fairness among threads
+• You need advanced thread coordination using Condition
+• High performance multithreading is required
+
+===========================
+INTERVIEW QUESTIONS
+
+--- Basic Level ---
+Q) What is a ReentrantLock?
+A) A lock that allows the same thread to acquire the lock more than once without blocking itself.
+
+Q) How is ReentrantLock different from synchronized?
+A) It provides more control: tryLock(), timeout, interruptible locking, fairness, and Condition support.
+
+Q) Which package contains ReentrantLock?
+A) java.util.concurrent.locks
+
+--- Medium Level ---
+Q) What is hold count?
+A) The number of times a thread has acquired the lock. It must unlock the same number of times to fully release it.
+
+Q) What happens if unlock() is missed?
+A) The lock is never released and other threads will block — causing deadlock.
+
+Q) Can a thread unlock a lock acquired by another thread?
+A) No. Calling unlock() from a non-owner thread throws IllegalMonitorStateException.
+
+Q) Why should unlock() be in a finally block?
+A) To guarantee lock release even when exceptions occur.
+
+--- Advanced Level ---
+Q) Difference between lock() and lockInterruptibly()?
+A) lock() blocks forever; lockInterruptibly() allows interruption while waiting.
+
+Q) When to use tryLock(long timeout)?
+A) When you want to avoid indefinite blocking and need to prevent deadlock.
+
+Q) What is fairness in ReentrantLock?
+A) Fair mode gives the lock to the longest-waiting thread (FIFO); it avoids starvation.
+
+Q) Does fairness guarantee best performance?
+A) No. Fairness avoids starvation but reduces throughput.
+
+--- Expert / System Design Level ---
+Q) Should ReentrantLock replace synchronized everywhere?
+A) No. Use synchronized for simple mutual exclusion. Use ReentrantLock only when advanced control is required.
+
+Q) Where do real systems prefer ReentrantLock?
+A) Banking transactions, producer-consumer systems, job schedulers, high-performance APIs, trading engines — where blocking must be minimized.
+
+===========================
+SUMMARY
+
+• ReentrantLock provides more capability and flexibility than synchronized.
+• It prevents self-deadlock by allowing the same thread to lock multiple times.
+• Must always be unlocked properly to avoid deadlock.
+• Use ReentrantLock for high-performance and complex synchronization scenarios.

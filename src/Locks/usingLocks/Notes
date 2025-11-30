@@ -1,0 +1,60 @@
+
+===========================================================
+🔐 Methods in java.util.concurrent.locks.Lock (Definitions)
+===========================================================
+
+1️⃣ void lock()
+----------------
+• Acquires the lock.
+• If the lock is already held by another thread, the current thread waits indefinitely until the lock becomes available.
+
+2️⃣ void lockInterruptibly() throws InterruptedException
+---------------------------------------------------------
+• Similar to lock(), but the waiting thread can be interrupted.
+• Useful when you do NOT want a thread to wait forever for a lock.
+
+3️⃣ boolean tryLock()
+---------------------
+• Attempts to acquire the lock immediately.
+• Returns:
+      true  → if the lock is free and acquired
+      false → if the lock is already held by another thread
+• Does NOT block the thread.
+
+4️⃣ boolean tryLock(long time, TimeUnit unit) throws InterruptedException
+-------------------------------------------------------------------------
+• Attempts to acquire the lock but waits only for the specified time.
+• If lock is acquired within the given time → returns true
+  else → returns false.
+• Thread can be interrupted while waiting.
+
+5️⃣ void unlock()
+-----------------
+• Releases the lock.
+• MUST be called inside a finally block to avoid deadlock in case of exception.
+
+6️⃣ Condition newCondition()
+---------------------------
+• Creates a Condition object used for advanced thread communication.
+• Similar to wait()/notify(), but more flexible and works only with Lock implementations.
+  Example: condition.await(), condition.signal()
+
+===========================================================
+Quick Summary:
+--------------
+lock()         → Wait forever until lock is acquired
+lockInterruptibly() → Wait, but can be interrupted
+tryLock()      → Try immediately; do not wait
+tryLock(timeout) → Wait only for limited time
+unlock()       → Release lock
+newCondition() → Enables wait/signal style communication
+===========================================================
+
+    ⚡ If you want quick one-liners (for revision)
+    Method	                                          Meaning
+1. lock()	                                    Take lock, wait forever
+2. lockInterruptibly()	            Take lock, but allow interruption
+3. tryLock()	                            Take lock only if free
+4. tryLock(timeout)	                Take lock within given time or give up
+5. unlock()	                                Release lock
+6. newCondition()	                Create condition for await/signal

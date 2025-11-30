@@ -1,0 +1,44 @@
+/*
+🔐 Intrinsic Lock vs Explicit Lock (Important for threading)
+
+1️⃣ Intrinsic Lock (a.k.a Monitor Lock)
+---------------------------------------
+• This is the default lock mechanism used by Java when we apply 'synchronized'.
+• Every Java object has an intrinsic lock internally.
+• When a thread enters a synchronized method/block, it acquires that object's lock.
+• Only one thread can hold the lock at a time → others are forced to wait.
+
+Limitations of intrinsic lock:
+  ✘ Cannot interrupt a waiting thread
+  ✘ Cannot attempt timed locking (no try for few seconds)
+  ✘ No fairness guarantee
+  ✘ Cannot check whether lock is free before entering
+
+Usage example:
+    synchronized void withdraw() { ... }
+    synchronized (this) { ... }
+
+
+2️⃣ Explicit Lock (ReentrantLock from java.util.concurrent.locks)
+------------------------------------------------------------------
+• A lock object we manually create and manage.
+• Provides much more control than 'synchronized'.
+
+Advantages over intrinsic lock:
+  ✔ tryLock() → take lock only if it is available
+  ✔ tryLock(timeout) → wait only for given time
+  ✔ lockInterruptibly() → thread can be interrupted while waiting for lock
+  ✔ Fairness policy → first waiting thread gets lock first
+  ✔ Condition objects → advanced wait/notify mechanism
+
+Usage example:
+    ReentrantLock lock = new ReentrantLock();
+    lock.lock();
+    try { ... }
+    finally { lock.unlock(); }   // must be released manually
+
+Summary:
+--------
+Intrinsic Lock (synchronized) → simple, automatic, but limited.
+Explicit Lock (ReentrantLock) → more powerful and flexible but needs manual handling.
+*/

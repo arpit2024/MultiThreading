@@ -1,0 +1,67 @@
+/*
+===========================================================
+🏦  Synchronization in Java (Context of this Code)
+===========================================================
+In this example, multiple threads try to withdraw money from
+a shared BankAccount object. Since balance is shared data,
+we must protect it from race conditions (2 threads modifying
+balance at the same time). That is why withdraw() is marked
+as 'synchronized' — allowing only ONE thread to execute the
+method at a time.
+
+Thread flow:
+------------
+t1 enters withdraw() → prints, sleeps, deducts balance → exits
+t2 waits until t1 releases the lock → then withdraws
+
+This ensures data safety and prevents inconsistent balance.
+===========================================================
+
+
+⚠ Disadvantages of 'synchronized' keyword (Why t2 waits)
+===========================================================
+🔸 1. Blocking behavior
+    If one thread (t1) is inside withdraw(), other threads
+    (t2, t3…) MUST wait — even if they want to execute another
+    block of code inside the same object.
+
+🔸 2. No lock interruption
+    A thread waiting for an intrinsic lock CANNOT be interrupted
+    using interrupt(). It must wait until the lock is released.
+
+🔸 3. No lock timeout
+    We cannot say “Wait only 2 seconds for the lock — if not acquired,
+    do something else”. It always waits indefinitely.
+
+🔸 4. No lock fairness
+    The JVM does NOT guarantee that the thread that waits longest
+    gets the lock first. A thread may be starved.
+
+🔸 5. Cannot check lock availability
+    We cannot ask:
+        "Is lock free? If yes → take it; if no → skip."
+    The thread immediately blocks until lock is available.
+
+These limitations become critical in high-performance,
+real-time or highly concurrent systems.
+===========================================================
+
+
+🚀 Why do we go for Locks (ReentrantLock)
+===========================================================
+The java.util.concurrent.locks package provides better control:
+
+✔ tryLock() → lock only if available
+✔ lockInterruptibly() → waiting thread can be interrupted
+✔ lock fairness policy → prevents starvation
+✔ Explicit unlock() → can release in finally block
+✔ Offers Condition objects → wait / signal with more flexibility
+
+In summary:
+-----------
+'synchronized' is simple and safe → suitable for basic mutual
+exclusion. But for advanced concurrency where timeouts, fairness,
+interruption, or higher performance are required, ReentrantLock
+and other modern lock implementations are preferred.
+===========================================================
+*/
