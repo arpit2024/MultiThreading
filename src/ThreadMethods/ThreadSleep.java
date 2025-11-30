@@ -29,3 +29,14 @@ public class ThreadSleep extends Thread {
                 System.out.println("Executing after t1.join method, this line is executed by: "+Thread.currentThread().getName());
         }
 }
+        /*
+        O/p:-
+        1
+        2
+        3
+        4
+        5
+        Custom Thread Execution completed
+        Executing after t1.join method, this line is executed by: main
+
+        * */

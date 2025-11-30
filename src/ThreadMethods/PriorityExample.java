@@ -1,7 +1,5 @@
 package ThreadMethods;
 
-import CreateThread.MyThread;
-
 
 /*
 setPriority(int newPriority): Changes the priority of the thread.

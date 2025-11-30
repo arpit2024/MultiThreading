@@ -26,5 +26,31 @@ public class ThreadYield extends Thread{
 
 
         }
+        /*
+        With out yield Method, O/p:-
+        t1 is running.
+        t1 is running.
+        t1 is running.
+        t1 is running.
+        t1 is running.
+        t2 is running.
+        t2 is running.
+        t2 is running.
+        t2 is running.
+        t2 is running.
 
+        After inserting Yield Method:-
+        O/p:-
+        t1 is running.
+        t2 is running.
+        t1 is running.
+        t2 is running.
+        t1 is running.
+        t2 is running.
+        t1 is running.
+        t2 is running.
+        t2 is running.
+        t1 is running.
+
+        * */
 }

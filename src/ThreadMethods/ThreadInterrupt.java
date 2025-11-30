@@ -19,6 +19,6 @@ public class ThreadInterrupt extends Thread{
                 ThreadInterrupt t1=new ThreadInterrupt();
                 t1.start();
                 t1.interrupt();
-
         }
+        //O/p:- Thread Interrupted. . . java.lang.InterruptedException: sleep interrupted
 }

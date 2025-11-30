@@ -11,7 +11,7 @@ The lifecycle of a thread in Java consists of several states, which a thread can
 4. Blocked/Waiting: A thread is in this state when it is waiting for a resource or for another thread to perform an action.
 5. Terminated: A thread is in this state when it has finished executing.
 * */
-public class MyThread extends Thread{
+public class ThreadLifecycle extends Thread{
         @Override
         public void run() {
                 System.out.println("RUNNING");
@@ -23,7 +23,7 @@ public class MyThread extends Thread{
         }
 
         public static void main(String[] args) throws InterruptedException {
-                MyThread t1 = new MyThread();
+                ThreadLifecycle t1 = new ThreadLifecycle();
                 System.out.println(t1.getState()); // NEW
                 t1.start();
                 System.out.println(t1.getState()); // RUNNABLE
@@ -31,7 +31,14 @@ public class MyThread extends Thread{
                 System.out.println(t1.getState()); // TIMED_WAITING
                 t1.join();//main method will wait for t1 to finish
                 System.out.println(t1.getState()); // TERMINATED
-
-
         }
+
+        /*
+        O/p:-
+        NEW
+        RUNNABLE
+        RUNNING
+        TIMED_WAITING
+        TERMINATED
+         */
 }

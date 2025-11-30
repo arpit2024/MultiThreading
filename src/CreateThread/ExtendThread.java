@@ -27,3 +27,14 @@ public class ExtendThread extends Thread{
                 }
         }
 }
+        /*
+        o/p:-
+        Currently Running: main
+        Currently Running: main
+        Currently Running Thread-0
+        Currently Running: main
+        Currently Running Thread-0
+        Currently Running: main
+        Currently Running Thread-0
+        Currently Running Thread-0
+        **/
