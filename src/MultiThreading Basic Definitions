@@ -1,0 +1,185 @@
+MULTITHREADING NOTES (BEGINNER)
+CPU
+
+The CPU (Central Processing Unit) is the “brain” of the computer.
+It executes instructions and performs operations such as arithmetic, logic, control, and input/output.
+
+Real world example:
+A chef in a kitchen preparing dishes.
+
+CORE
+
+A Core is an individual processing unit inside the CPU.
+Modern CPUs have multiple cores, meaning they can process multiple tasks at the same time.
+
+Example:
+A quad-core processor has 4 cores → 4 tasks can run in parallel (browser, music, downloads, video call).
+
+PROGRAM
+
+A program is a set of instructions written in a programming language for a specific task.
+
+Example:
+Microsoft Word is a program for creating and editing documents.
+
+PROCESS
+
+A process is an executing instance of a program.
+When a program runs, the operating system creates a process to manage it.
+
+Example:
+Opening Word creates a Word process in the OS.
+
+THREAD
+
+A thread is the smallest unit of execution inside a process.
+A process can contain multiple threads that run independently and share memory.
+
+Example:
+A web browser runs each tab as a separate thread inside one browser process.
+
+RELATION: PROGRAM → PROCESS → THREAD
+
+Program (Blueprint)
+Process (Running program)
+Thread (Smallest execution unit inside process)
+
+MULTITASKING
+
+Multitasking = ability of OS to run multiple processes at the same time.
+
+Single-Core CPU:
+OS rapidly switches between processes → illusion of parallel tasks (time slicing).
+
+Multi-Core CPU:
+Different processes run truly parallel on different cores.
+
+Example:
+Listening to music + opening WhatsApp + downloading a file.
+
+MULTITHREADING
+
+Multithreading = a process creates multiple threads to run tasks concurrently.
+
+Example:
+A browser:
+• Thread 1 → Render page
+• Thread 2 → Run JavaScript
+• Thread 3 → Handle user input
+• Thread 4 → Manage downloads
+
+Multithreading improves responsiveness and performance by dividing tasks into smaller units (threads).
+
+TIME SLICING
+
+• CPU time is divided into tiny slices (quanta).
+• OS scheduler assigns each process/thread a time slice.
+• No program keeps the CPU forever.
+
+Purpose: fairness & responsiveness.
+
+CONTEXT SWITCHING
+
+• Switching from one process/thread to another by saving the current state and loading the next state.
+• Happens when time slice expires or when a thread is blocked.
+
+Benefit: enables concurrent execution even on a single-core CPU.
+
+MULTITASKING vs MULTITHREADING
+
+Multitasking → running multiple programs.
+Multithreading → running multiple threads inside the same program.
+
+Both concepts together make systems fast and responsive.
+
+MULTITHREADING IN JAVA
+
+Java has built-in support for multithreading.
+
+Key points in Java:
+• A thread is a lightweight process.
+• Main thread starts automatically when program runs.
+• Java provides Thread class and Runnable interface to create threads.
+• JVM + OS manage thread scheduling, time slicing, and context switching.
+
+Single-Core System:
+Threads take turns (illusion of parallelism).
+
+Multi-Core System:
+Threads can run truly parallel on multiple cores.
+
+BENEFITS OF MULTITHREADING
+
+• Better CPU utilization
+• Faster task execution
+• Improved application responsiveness
+• Independent operations inside the same program
+
+Example:
+Video player:
+• Main thread – User interface
+• Thread 2 – Audio playback
+• Thread 3 – Video decoding
+• Thread 4 – Subtitles
+
+WHERE MULTITHREADING IS USED (Real World)
+
+• Gaming (rendering, physics, audio)
+• Banking transactions
+• Chat / messaging applications
+• Web servers handling multiple client requests
+• Streaming apps (video, audio, buffering)
+• Stock market / trading systems
+
+COMMON THREAD ISSUES (IMPORTANT)
+
+• Race conditions
+• Deadlocks
+• Starvation
+• Thread leaks (threads never end)
+• Context switching overhead
+
+KEY TAKEAWAY
+
+• Program is code.
+• Process is running program.
+• Thread is the smallest executable unit inside a process.
+• Multitasking handles multiple processes.
+• Multithreading handles multiple threads inside a process.
+• OS time slicing and context switching make concurrency possible.
+• Multi-core systems allow true parallel execution.
+
+ONE-LINE MEMORY FORMULA
+
+CPU → Cores
+Program → Process → Threads
+Multitasking → many programs
+Multithreading → many threads inside a program
+
+SMALL SUMMARY FOR INTERVIEW INTRO
+
+“Multithreading in Java allows multiple threads to run concurrently within a single process.
+It improves performance by utilizing CPU cores efficiently and enhances responsiveness by executing independent tasks in parallel.”
+
+SAMPLE INTERVIEW QUESTIONS
+
+Q1) What is a thread?
+A thread is the smallest execution unit inside a process.
+
+Q2) Difference between process and thread?
+A process is an executing program; a thread is a lightweight unit inside a process that shares the same memory.
+
+Q3) Multitasking vs Multithreading?
+Multitasking runs multiple applications, multithreading runs multiple threads in the same application.
+
+Q4) How does multithreading run on a single-core CPU?
+Through time slicing + context switching.
+
+Q5) How does multithreading run on multi-core CPUs?
+Threads run in true parallel across different cores.
+
+Q6) Why is multithreading important?
+For performance, responsiveness, and maximum CPU utilization.
+
+Q7) What is context switching?
+Saving current thread state and loading next thread state to share CPU.
