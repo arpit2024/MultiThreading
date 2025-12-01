@@ -1,0 +1,209 @@
+EXECUTOR & EXECUTOR SERVICE — COMPLETE NOTES
+WHY DO WE NEED EXECUTORS?
+
+Before Executors, threads were created manually like:
+new Thread(runnable).start();
+
+Problems with this approach:
+• Creating a new thread every time is expensive
+• Too many threads can slow down the system
+• No built-in way to reuse threads
+• No easy control over starting, stopping, or limiting threads
+• No thread scheduling mechanism
+
+→ Executors solve all these problems by allowing controlled and efficient management of threads.
+
+WHAT IS EXECUTOR?
+
+• Executor is an interface in java.util.concurrent.
+• It represents an object that can execute Runnable tasks.
+• It separates task submission from thread creation.
+
+Main method:
+void execute(Runnable command)
+
+Executor only provides a way to run tasks — no shutdown, no thread return value support, no futures.
+
+WHAT IS EXECUTOR SERVICE?
+
+• ExecutorService is a sub-interface of Executor
+• More powerful — manages thread lifecycle and returns results
+
+ExecutorService provides:
+• submit() — supports Runnable and Callable
+• shutdown() — graceful shutdown
+• shutdownNow() — force shutdown
+• invokeAll(), invokeAny() — execute multiple tasks
+• Future — get results from threads
+
+So:
+Executor → basic
+ExecutorService → advanced (recommended for real projects)
+
+RELATION BETWEEN THEM
+
+Executor (interface)
+↓ extended by
+ExecutorService (interface)
+↓ implemented by
+ThreadPoolExecutor (class) — actual working implementation
+ScheduledThreadPoolExecutor (class) — scheduled tasks
+
+HOW TO CREATE EXECUTOR SERVICE
+
+We use helper class Executors to create thread pools:
+
+Executors.newFixedThreadPool(5);
+Executors.newSingleThreadExecutor();
+Executors.newCachedThreadPool();
+Executors.newScheduledThreadPool(10);
+
+TYPES OF EXECUTOR SERVICES (THREAD POOLS)
+
+Fixed Thread Pool
+
+Executors.newFixedThreadPool(n)
+• Creates a pool of n threads
+• Tasks beyond limit wait in a queue
+• Best for servers, database calls, APIs
+
+Cached Thread Pool
+
+Executors.newCachedThreadPool()
+• Creates threads as needed & reuses idle threads
+• Best for many short-lived tasks
+• No fixed size → may grow too large if uncontrolled
+
+Single Thread Executor
+
+Executors.newSingleThreadExecutor()
+• Only 1 thread
+• Tasks executed one after another in order
+• Best for logging, auditing, sequential file operations
+
+Scheduled Thread Pool
+
+Executors.newScheduledThreadPool(n)
+• Executes tasks after a delay or periodically
+• Best for background jobs, scheduler, maintenance tasks
+
+BASIC USAGE EXAMPLE (BEGINNER FRIENDLY)
+
+import java.util.concurrent.*;
+
+public class ExecutorExample {
+public static void main(String[] args) {
+ExecutorService executor = Executors.newFixedThreadPool(3);
+
+    for (int i = 1; i <= 5; i++) {
+        Runnable task = new Worker(i);
+        executor.submit(task);
+    }
+
+    executor.shutdown();
+}
+
+
+}
+
+class Worker implements Runnable {
+private int taskNo;
+public Worker(int taskNo) { this.taskNo = taskNo; }
+
+@Override
+public void run() {
+    System.out.println("Executing task " + taskNo +
+        " on thread " + Thread.currentThread().getName());
+}
+
+
+}
+
+REAL-TIME USE CASES
+
+• Web servers (thread pool handles client requests)
+• Banking transactions
+• Messaging apps (background jobs)
+• Email/SMS sending service
+• APIs calling external systems
+• Batch processing
+• Real-time analytics dashboards
+• Game engines & physics updates
+
+ADVANTAGES OF EXECUTOR SERVICE
+
+• Efficient CPU usage — threads reused
+• Controls number of threads → prevents overload
+• Future and Callable support return values
+• Built-in management of thread lifecycle
+• Easy scheduling for periodic tasks
+• Better performance and reliability than manually creating threads
+
+IMPORTANCE OF SHUTDOWN()
+
+After submitting tasks:
+executor.shutdown(); → completes pending tasks then stops
+executor.shutdownNow(); → stops immediately and interrupts running tasks
+
+If shutdown() is not called:
+• JVM will not terminate because worker threads stay alive
+
+INTERVIEW QUESTIONS AND ANSWERS
+
+--- Basic Level ---
+Q) What is an Executor in Java?
+A) An interface used to run tasks without directly managing threads.
+
+Q) What is ExecutorService?
+A) A sub-interface of Executor that manages threads and supports task results, scheduling, and shutdown.
+
+Q) Difference between execute() and submit()?
+A)
+execute() → accepts Runnable, no return value
+submit() → accepts Runnable/Callable, returns Future
+
+--- Medium Level ---
+Q) What is a Thread Pool?
+A) A group of worker threads reused to execute multiple tasks without creating new threads each time.
+
+Q) Fixed thread pool vs cached thread pool?
+A)
+Fixed → limited number of threads, queued tasks
+Cached → dynamically grows and shrinks based on demand
+
+Q) What is Future?
+A) A Future stores the result of a task and can be used to check completion or retrieve output.
+
+--- Advanced Level ---
+Q) Can ExecutorService prevent thread starvation and overload?
+A) Yes — thread pools limit number of concurrent tasks, avoiding memory and CPU overload.
+
+Q) What happens if shutdown() is not called?
+A) JVM continues running because thread pool threads are non-daemon.
+
+Q) Difference between ScheduledThreadPool and Timer?
+A) ScheduledThreadPool is more reliable, supports multiple threads, and handles exceptions safely; Timer uses only one thread.
+
+--- Expert Level ---
+Q) What is ThreadPoolExecutor?
+A) The actual implementation behind ExecutorService with full control over:
+corePoolSize, maxPoolSize, queueSize, keepAliveTime, rejection policies.
+
+Q) Can you create custom rejection policies?
+A) Yes. RejectedExecutionHandler handles tasks that cannot be executed due to pool saturation.
+
+SUMMARY
+
+• Executor = basic interface to run tasks
+• ExecutorService = advanced interface with thread management
+• Thread pools reuse threads → much faster than creating them manually
+• Always shutdown executor when finished
+• Choose thread pool type based on workload
+Fixed for constant flow
+Cached for many short tasks
+Single for ordered execution
+Scheduled for periodic tasks
+
+ONE-LINE MEMORY TIP
+
+ExecutorService = “submit tasks → pool manages threads → shutdown when done.”
