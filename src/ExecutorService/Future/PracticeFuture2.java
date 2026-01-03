@@ -42,12 +42,41 @@ public class PracticeFuture2 {
                 // get() works but returns null for Runnable / //get wont work here , because if you try to run get then callable will be called
                 System.out.println(callFuture3.get()); // prints: null
 
+                // Another example of submit(Runnable, result)
+                Future<?> runnableSubmit =
+                        executorService.submit(() -> System.out.println("Hello"), "Success");
+/*
+Another overload of submit() – submit(Runnable task, T result)
 
+- This method submits a Runnable for execution.
+- Runnable itself does NOT return any value.
+- However, submit() allows you to explicitly provide a result value.
+
+Method signature:
+<T> Future<T> submit(Runnable task, T result);
+
+How it works:
+- Runnable executes normally (prints "Hello").
+- After successful completion of the Runnable,
+  the provided result ("Success") is stored in the Future.
+- Future.get() will return the given result.
+
+Important points:
+- The result is NOT returned by Runnable.
+- The result is supplied manually to submit().
+- If Runnable throws an exception, Future.get() will throw ExecutionException.
+
+Example:
+Future<String> f =
+        executorService.submit(() -> System.out.println("Hello"), "Success");
+
+System.out.println(f.get());  // Output: Success
+*/
                 executorService.shutdown();
-
 
         }
 }
+
 
 /*
 ==============================

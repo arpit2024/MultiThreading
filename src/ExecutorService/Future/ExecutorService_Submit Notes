@@ -1,0 +1,297 @@
+
+=====================================================
+EXECUTORSERVICE.submit() – ALL OVERLOADS (COMPLETE NOTES)
+=====================================================
+
+ExecutorService provides THREE submit() methods.
+
+-----------------------------------------------------
+1) submit(Runnable task)
+-----------------------------------------------------
+
+Method signature:
+Future<?> submit(Runnable task);
+
+Key points:
+- Runnable does NOT return any value.
+- submit() still returns a Future object.
+- Future.get() will return null on successful completion.
+- If Runnable throws an exception, get() throws ExecutionException.
+
+Sample:
+----------------------------------
+Future<?> future = executorService.submit(
+        () -> System.out.println("Runnable executed")
+);
+
+System.out.println(future.get()); // Output: null
+----------------------------------
+
+
+-----------------------------------------------------
+2) submit(Runnable task, T result)
+-----------------------------------------------------
+
+Method signature:
+<T> Future<T> submit(Runnable task, T result);
+
+Key points:
+- Runnable still does NOT return anything.
+- You manually provide a result to be returned.
+- If Runnable completes successfully:
+    → Future.get() returns the provided result.
+- If Runnable throws an exception:
+    → Future.get() throws ExecutionException.
+
+Why this exists:
+- Useful when you want:
+  "Task completed successfully" message
+  or a predefined status/result.
+
+Sample:
+----------------------------------
+Future<String> future = executorService.submit(
+        () -> System.out.println("Runnable executed"),
+        "SUCCESS"
+);
+
+System.out.println(future.get()); // Output: SUCCESS
+----------------------------------
+
+
+-----------------------------------------------------
+3) submit(Callable<T> task)
+-----------------------------------------------------
+
+Method signature:
+<T> Future<T> submit(Callable<T> task);
+
+Key points:
+- Callable CAN return a value.
+- Callable CAN throw checked exceptions.
+- Future.get() returns the computed value.
+- Preferred when result is required.
+
+Sample:
+----------------------------------
+Future<Integer> future = executorService.submit(
+        () -> 42
+);
+
+System.out.println(future.get()); // Output: 42
+----------------------------------
+
+
+-----------------------------------------------------
+Runnable vs Callable – Quick Comparison
+-----------------------------------------------------
+
+Runnable:
+- Method: void run()
+- No return value
+- Cannot throw checked exceptions
+- Future.get() → null (unless result is supplied manually)
+
+Callable:
+- Method: V call() throws Exception
+- Returns a value
+- Can throw checked exceptions
+- Future.get() → returned value
+
+
+-----------------------------------------------------
+Common Mistakes
+-----------------------------------------------------
+
+❌ Runnable returning value:
+Runnable r = () -> "Hello";   // INVALID
+
+❌ Assigning Runnable submit to Future<String>:
+Future<String> f = executorService.submit(
+        () -> System.out.println("Hello")
+); // INVALID
+
+✅ Correct:
+Future<?> f = executorService.submit(
+        () -> System.out.println("Hello")
+);
+
+Minimal Working Demo (Optional)
+
+ExecutorService executorService = Executors.newSingleThreadExecutor();
+
+Future<?> f1 = executorService.submit(() -> System.out.println("Runnable"));
+Future<String> f2 = executorService.submit(() -> System.out.println("Runnable"), "DONE");
+Future<Integer> f3 = executorService.submit(() -> 100);
+
+System.out.println(f1.get()); // null
+System.out.println(f2.get()); // DONE
+System.out.println(f3.get()); // 100
+
+executorService.shutdown(
+-----------------------------------------------------
+INTERVIEW ONE-LINER SUMMARY
+-----------------------------------------------------
+
+- submit(Runnable) → Future<?> → get() returns null
+- submit(Runnable, result) → Future<T> → get() returns provided result
+- submit(Callable<T>) → Future<T> → get() returns computed value
+- Callable is preferred when result or checked exceptions are needed
+
+=====================================================
+
+-----------------PART 2 NOTES:- -------------------
+
+/*
+=====================================================
+EXECUTORSERVICE – LIFECYCLE & CONTROL METHODS (NOTES)
+=====================================================
+
+ExecutorService controls the lifecycle of thread pools.
+Below are the MOST IMPORTANT methods used in real projects
+and frequently asked in interviews.
+
+-----------------------------------------------------
+1) shutdown()
+-----------------------------------------------------
+
+Method:
+void shutdown();
+
+What it does:
+- Stops accepting NEW tasks.
+- Already submitted tasks WILL continue to execute.
+- Does NOT block the calling thread.
+
+Important:
+- shutdown() does NOT wait for tasks to finish.
+- After shutdown(), isShutdown() returns true.
+- Executor fully terminates only after all tasks finish.
+
+Example:
+----------------------------------
+executorService.shutdown();
+----------------------------------
+
+
+-----------------------------------------------------
+2) shutdownNow()
+-----------------------------------------------------
+
+Method:
+List<Runnable> shutdownNow();
+
+What it does:
+- Attempts to stop ALL running tasks immediately.
+- Interrupts running threads.
+- Returns a list of tasks that were submitted but NOT started.
+
+Important:
+- No guarantee tasks will stop (depends on interruption handling).
+- Threads must check interruption status.
+
+Example:
+----------------------------------
+List<Runnable> pendingTasks = executorService.shutdownNow();
+----------------------------------
+
+
+-----------------------------------------------------
+3) isShutdown()
+-----------------------------------------------------
+
+Method:
+boolean isShutdown();
+
+What it checks:
+- Returns true if shutdown() or shutdownNow() has been called.
+- Does NOT indicate whether tasks have finished.
+
+Example:
+----------------------------------
+if (executorService.isShutdown()) {
+    System.out.println("Executor is shut down");
+}
+----------------------------------
+
+
+-----------------------------------------------------
+4) isTerminated()
+-----------------------------------------------------
+
+Method:
+boolean isTerminated();
+
+What it checks:
+- Returns true ONLY when:
+  a) shutdown() or shutdownNow() is called AND
+  b) ALL tasks have completed AND
+  c) ALL threads have stopped
+
+Important:
+- isTerminated() can return false even after shutdown().
+
+Example:
+----------------------------------
+if (executorService.isTerminated()) {
+    System.out.println("Executor fully terminated");
+}
+----------------------------------
+
+
+-----------------------------------------------------
+5) awaitTermination(timeout, unit)
+-----------------------------------------------------
+
+Method:
+boolean awaitTermination(long timeout, TimeUnit unit)
+        throws InterruptedException;
+
+What it does:
+- Blocks the calling thread for the given time.
+- Waits for executor to fully terminate.
+
+Return value:
+- true  → executor terminated within timeout
+- false → timeout elapsed before termination
+
+Example:
+----------------------------------
+executorService.shutdown();
+if (!executorService.awaitTermination(5, TimeUnit.SECONDS)) {
+    executorService.shutdownNow();
+}
+----------------------------------
+
+
+-----------------------------------------------------
+6) submit() vs shutdown() relationship
+-----------------------------------------------------
+
+- submit() → adds tasks to executor queue.
+- shutdown() → stops accepting new tasks.
+- shutdownNow() → interrupts running tasks.
+- isShutdown() → checks shutdown request.
+- isTerminated() → checks actual termination.
+
+Execution Flow (Typical):
+----------------------------------
+submit tasks
+shutdown()
+awaitTermination()
+shutdownNow() (if needed)
+----------------------------------
+
+
+-----------------------------------------------------
+INTERVIEW ONE-LINER SUMMARY
+-----------------------------------------------------
+
+- shutdown() stops accepting new tasks but lets existing tasks finish
+- shutdownNow() attempts to stop everything immediately
+- isShutdown() checks whether shutdown was requested
+- isTerminated() checks whether executor has fully stopped
+- awaitTermination() waits for termination with timeout
+
+=====================================================
+*/
